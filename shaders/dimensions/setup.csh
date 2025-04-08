@@ -1,6 +1,6 @@
-layout (local_size_x = 10, local_size_y = 10, local_size_z = 1) in;
-const ivec3 workGroups = ivec3(10, 10, 1);
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
+const ivec3 workGroups = ivec3(6, 6, 1);
 
 #ifdef IS_LPV_ENABLED
     #include "/lib/items.glsl"
@@ -50,24 +50,11 @@ const ivec3 workGroups = ivec3(10, 10, 1);
     }
 #endif
 
-vec3 hsv2rgb(vec3 c)
-{
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
-
 
 void main() {
     #ifdef IS_LPV_ENABLED
-        const float wrap = gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-        int blockId = int(gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * wrap);
-
-        #ifdef AUTO_GENERATED_FLOODFILL
-            if (blockId >= 8192) return;
-        #else
-            if (blockId >= 2048) return;
-        #endif
+        int blockId = int(gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * 48);
+        if (blockId >= 2048) return;
 
         vec3 lightColor = vec3(0.0);
         float lightRange = 0.0;
@@ -464,6 +451,13 @@ void main() {
             mixWeight = 1.0;
         }
 
+        #ifdef LPV_REDSTONE_LIGHTS
+            if (blockId == BLOCK_COMPARATOR_LIT) {
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 4.0;
+            }
+        #endif
+
         switch (blockId) {
             case BLOCK_COPPER_BULB_LIT:
                 lightColor = LightColor_CopperBulb;
@@ -652,66 +646,75 @@ void main() {
             mixWeight = 0.9;
         }
 
-        #ifdef LPV_REDSTONE_LIGHTS
         switch (blockId) {
+        #ifdef LPV_REDSTONE_LIGHTS
             case BLOCK_REDSTONE_WIRE_1:
-                lightRange = 1.4;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 0.5;
                 break;
             case BLOCK_REDSTONE_WIRE_2:
-                lightRange = 1.8;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 1.0;
                 break;
             case BLOCK_REDSTONE_WIRE_3:
-                lightRange = 2.2;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 1.5;
                 break;
             case BLOCK_REDSTONE_WIRE_4:
-                lightRange = 2.6;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 2.0;
                 break;
             case BLOCK_REDSTONE_WIRE_5:
-                lightRange = 3.0;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 2.5;
                 break;
             case BLOCK_REDSTONE_WIRE_6:
-                lightRange = 3.4;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 3.0;
                 break;
             case BLOCK_REDSTONE_WIRE_7:
-                lightRange = 3.8;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 3.5;
                 break;
             case BLOCK_REDSTONE_WIRE_8:
-                lightRange = 4.2;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 4.0;
                 break;
             case BLOCK_REDSTONE_WIRE_9:
-                lightRange = 4.6;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 4.5;
                 break;
             case BLOCK_REDSTONE_WIRE_10:
+                lightColor = LightColor_RedstoneTorch;
                 lightRange = 5.0;
                 break;
             case BLOCK_REDSTONE_WIRE_11:
-                lightRange = 5.4;
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 5.5;
                 break;
             case BLOCK_REDSTONE_WIRE_12:
-                lightRange = 5.8;
-                break;
-            case BLOCK_REDSTONE_WIRE_13:
-                lightRange = 6.2;
-                break;
-            case BLOCK_REDSTONE_WIRE_14:
-                lightRange = 6.6;
-                break;
-            case BLOCK_REDSTONE_WIRE_15:
-                lightRange = 7.0;
-                break;
-
-            case BLOCK_COMPARATOR_LIT:
-            case BLOCK_REPEATER_LIT:
+                lightColor = LightColor_RedstoneTorch;
                 lightRange = 6.0;
                 break;
-        }
-        if ((blockId >= BLOCK_REDSTONE_WIRE_1 && blockId <= BLOCK_REPEATER_LIT) || blockId == BLOCK_COMPARATOR_LIT) {
-            lightColor = vec3(1.0, LightColor_RedstoneTorch.yz);
-            mixWeight = 0.9 - lightRange / 8;
-        }
+            case BLOCK_REDSTONE_WIRE_13:
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 6.5;
+                break;
+            case BLOCK_REDSTONE_WIRE_14:
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 7.0;
+                break;
+            case BLOCK_REDSTONE_WIRE_15:
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 7.5;
+                break;
+
+            case BLOCK_REPEATER_LIT:
+                lightColor = LightColor_RedstoneTorch;
+                lightRange = 4.0;
+                break;
         #endif
 
-        switch (blockId) {
             case BLOCK_RESPAWN_ANCHOR_4:
                 lightColor = vec3(1.0, 0.2, 1.0);
                 lightRange = 15.0;
@@ -1128,63 +1131,6 @@ void main() {
             lightRange = 8.0;
             mixWeight = 1.0;
         }
-
-
-		// Format:
-        // 1) M MDDD DDDD DDDD    for x4096
-        //    M -> mode
-        //    Modes:
-        //     0 (0b00) -> off
-        //     1 (0b01) -> HSV mode:
-        //         0 1HHH HSSS VVVV:
-        //             H -> hue
-        //             S -> saturation
-        //             V -> value
-        //     2/3 (0b1X) -> tinting mode (glass):
-        //         1 RRRR GGGG BBBB:
-        //             R -> red
-        //             G -> green
-        //             B -> blue
-
-        #ifdef AUTO_GENERATED_FLOODFILL
-		int mode = ((blockId >> 11) & 0x3);  // 0b11
-
-		switch (mode) {
-            case 1:  // 0 1HHH HSSS VVVV
-                float hue = float((blockId >> 7) & 0xf) / 15.0;  // 0b1111
-                float saturation = float((blockId >> 4) & 0x7) / 7.0;  // 0b111
-                float value = float(blockId & 0xf) / 15.0;  // 0b1111
-
-                // TODO: Consider luma based light boost for saturated colors (especially purples, deep blues and reds)
-
-                lightColor = hsv2rgb(vec3(hue, saturation, value));
-                tintColor = lightColor;
-                lightRange = value * 15.0;
-                mixWeight = 1 - value;
-                break;
-
-            //case 2:  // MMRR RBBB YYYY
-            //    float Cr = float((blockId >> 7) & 0x7) / 7.0;  // 0b111
-            //    float Cb = float((blockId >> 4) & 0x7) / 7.0;  // 0b111
-            //    float Y = float(blockId & 0xf) / 15.0;  // 0b1111
-
-            //    lightColor = YCbCr2rgb(vec3(Y, Cb, Cr));
-            //    tintColor = lightColor;
-            //    lightRange = Y * 15.0;
-            //    mixWeight = 1 - Y;
-            //    break;
-
-            case 2:
-            case 3:  // 1 RRRR GGGG BBBB
-                float red = float((blockId >> 8) & 0xf) / 15.0;  // 0b1111
-                float green = float((blockId >> 4) & 0xf) / 15.0;  // 0b1111
-                float blue = float(blockId & 0xf) / 15.0;  // 0b1111
-
-                tintColor = vec3(red, green, blue);
-                mixWeight = 1.0;
-                break;
-		}
-        #endif
 
 
         // hack to increase light (if set)
