@@ -297,7 +297,7 @@ vec3 specularReflections(
 	roughness *= roughness;
 
 	f0 = f0 == 0.0 ? 0.02 : f0;
-	
+
 	// f0 = 1.0;
 	// roughness = 0.0;
 
