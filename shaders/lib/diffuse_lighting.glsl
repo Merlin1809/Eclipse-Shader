@@ -36,7 +36,6 @@ vec3 doBlockLightLighting(
     float lightmapCurve = mix(lightmapLight, 2.5, lightmapBrightspot);
     vec3 blockLight = lightmapCurve * lightColor;
     
-    
     #if defined IS_LPV_ENABLED && defined MC_GL_EXT_shader_image_load_store
         vec4 lpvSample = SampleLpvLinear(lpvPos);
         #ifdef VANILLA_LIGHTMAP_MASK
@@ -51,7 +50,11 @@ vec3 doBlockLightLighting(
         voxelRangeFalloff = 1.0 - pow(1.0-pow(voxelRangeFalloff,1.5),3.0);
         
         // outside the voxel volume, lerp to vanilla lighting as a fallback
-        blockLight = mix(blockLight, lpvSample.rgb, voxelRangeFalloff);
+        // blockLight = mix(blockLight, lpvSample.rgb, voxelRangeFalloff);
+        
+        // to fix optifine/continuity custom emissives, only allow the vanilla lightmap at high torch light levels.
+        vec3 mix_lpvsample = mix(max(lpvSample.rgb, lightColor * 2.5 * min(max(lightmap-0.9,0.0)/(1.0-0.9),1.0)), lpvSample.rgb, clamp(dot(lpvSample.rgb,vec3(1.0)),0.0,1.0));
+        blockLight = mix(blockLight, mix_lpvsample, voxelRangeFalloff);
 
         #ifdef Hand_Held_lights
             // create handheld lightsources
@@ -74,9 +77,9 @@ vec3 doIndirectLighting(
 
     // float lightmapCurve = pow(1.0-pow(1.0-lightmap,2.0),2.0);
     // float lightmapCurve = lightmap*lightmap;
-    float lightmapCurve = (pow(lightmap,15.0)*2.0 + lightmap*lightmap)*0.5;
+    float lightmapCurve = (pow(lightmap,15.0)*2.0 + lightmap*lightmap)/3.0; //make sure its 0.0-1.0
 
-    vec3 indirectLight = lightColor * lightmapCurve * ambient_brightness * 0.7; 
+    vec3 indirectLight = lightColor * lightmapCurve * ambient_brightness; 
 
     // indirectLight = max(indirectLight, minimumLightColor * (MIN_LIGHT_AMOUNT * 0.02 * 0.2 + nightVision));
     indirectLight += minimumLightColor * (MIN_LIGHT_AMOUNT * 0.02 * 0.2 + nightVision*0.02);
