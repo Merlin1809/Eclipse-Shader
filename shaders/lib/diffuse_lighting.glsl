@@ -53,7 +53,7 @@ vec3 doBlockLightLighting(
         // blockLight = mix(blockLight, lpvSample.rgb, voxelRangeFalloff);
         
         // to fix optifine/continuity custom emissives, only allow the vanilla lightmap at high torch light levels.
-        vec3 mix_lpvsample = mix(max(lpvSample.rgb, lightColor * 2.5 * min(max(lightmap-0.9,0.0)/(1.0-0.9),1.0)), lpvSample.rgb, clamp(dot(lpvSample.rgb,vec3(1.0)),0.0,1.0));
+        vec3 mix_lpvsample = mix(max(lpvSample.rgb, lightColor * 2.5 * min(max(lightmap-0.999,0.0)/(1.0-0.999),1.0)), lpvSample.rgb, clamp(dot(lpvSample.rgb,vec3(300.0)),0.0,1.0));
         blockLight = mix(blockLight, mix_lpvsample, voxelRangeFalloff);
 
         #ifdef Hand_Held_lights
