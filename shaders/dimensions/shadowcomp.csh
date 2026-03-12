@@ -147,9 +147,55 @@ void main() {
         }
 
         // Mix neighbor voxel light values
+
+        // Apply glass tint color mixing via RYB hue blending (order-independent, no dimming)
         if (any(greaterThan(tintColor, vec3(0.0)))) {
             vec4 lightMixed = mixNeighbours(ivec3(gl_LocalInvocationID), mixMask);
-            lightMixed.rgb *= tintColor;
+
+            float maxTint = max(max(tintColor.r, tintColor.g), tintColor.b);
+            float minTint = min(min(tintColor.r, tintColor.g), tintColor.b);
+            // Only apply hue mixing for chromatic (non-gray) glass
+            if (maxTint - minTint > 0.01) {
+                vec3 normalizedTint = tintColor / maxTint;
+                float peakBefore = max(max(lightMixed.r, lightMixed.g), lightMixed.b);
+
+                if (peakBefore > 1e-6) {
+                    vec3 lightHsv = RgbToHsv(lightMixed.rgb);
+                    vec3 tintHsv = RgbToHsv(normalizedTint);
+
+                    // Remap RGB hue → RYB hue for intuitive subtractive mixing (e.g. blue+yellow=green)
+                    // Piecewise linear: stretches red-yellow, compresses green-blue
+                    float lightRybH = lightHsv.x < (1.0/6.0) ? lightHsv.x * 2.0 :
+                                      lightHsv.x < (1.0/3.0) ? (1.0/3.0) + (lightHsv.x - (1.0/6.0)) :
+                                      lightHsv.x < (2.0/3.0) ? 0.5 + (lightHsv.x - (1.0/3.0)) * 0.5 :
+                                      lightHsv.x;
+                    float tintRybH  = tintHsv.x < (1.0/6.0) ? tintHsv.x * 2.0 :
+                                      tintHsv.x < (1.0/3.0) ? (1.0/3.0) + (tintHsv.x - (1.0/6.0)) :
+                                      tintHsv.x < (2.0/3.0) ? 0.5 + (tintHsv.x - (1.0/3.0)) * 0.5 :
+                                      tintHsv.x;
+
+                    // Circular weighted mean in RYB hue space for order-independent blending
+                    // Light weight ramps from 0→1 via smoothstep so torch light (low sat) defers to glass,
+                    // while already-tinted light (high sat) gets equal weight for symmetric midpoint mixing
+                    float lw = smoothstep(0.0, 0.5, lightHsv.y);
+                    float tw = 1.0;
+                    float cx = lw * cos(lightRybH * 6.2831853) + tw * cos(tintRybH * 6.2831853);
+                    float cy = lw * sin(lightRybH * 6.2831853) + tw * sin(tintRybH * 6.2831853);
+                    float newRybH = (abs(cx) + abs(cy) > 1e-6) ? fract(atan(cy, cx) / 6.2831853) : tintRybH;
+
+                    // Inverse map: RYB hue → RGB hue
+                    lightHsv.x = newRybH < (1.0/3.0) ? newRybH * 0.5 :
+                                 newRybH < 0.5        ? (1.0/6.0) + (newRybH - (1.0/3.0)) :
+                                 newRybH < (2.0/3.0)  ? (1.0/3.0) + (newRybH - 0.5) * 2.0 :
+                                 newRybH;
+
+                    // Keep whichever saturation is higher so colors stay vibrant through multiple panes
+                    lightHsv.y = max(lightHsv.y, tintHsv.y);
+
+                    lightMixed.rgb = HsvToRgb(lightHsv);
+                }
+            }
+
             lightValue += lightMixed;
         }
 
