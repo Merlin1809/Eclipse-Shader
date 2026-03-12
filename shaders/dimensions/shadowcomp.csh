@@ -192,7 +192,7 @@ void main() {
                                  newRybH;
 
                     lightHsv.y = max(lightHsv.y, tintHsv.y);
-                    lightHsv.z *= transmittance;
+                    lightHsv.z *= sqrt(transmittance);
 
                     lightMixed.rgb = HsvToRgb(lightHsv);
                 }
