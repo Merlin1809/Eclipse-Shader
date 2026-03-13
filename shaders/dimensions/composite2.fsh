@@ -401,7 +401,7 @@ vec4 waterVolumetrics(vec3 rayStart, vec3 rayEnd, float rayLength, vec2 dither, 
 
 					if(texture(shadowtex1, pos).x > pos.z && sh.x < 1.0){
 						vec4 translucentShadow = texture(shadowcolor0, pos.xy);
-						if(translucentShadow.a < 0.9) sh = normalize(translucentShadow.rgb+0.0001);
+						if(translucentShadow.a < 0.9) sh = (translucentShadow.rgb+0.0001) / (max(max(translucentShadow.r, translucentShadow.g), translucentShadow.b) + 0.0001);
 					}
 				#else
 					sh = vec3(texture(shadow, pos).x);
@@ -639,7 +639,7 @@ vec4 waterVolumetrics_alt( vec3 rayStart, vec3 rayEnd, float estEndDepth, float 
 
 					if(texture(shadowtex1, pos).x > pos.z && sh2.x < 1.0){
 						vec4 translucentShadow = texture(shadowcolor0, pos.xy);
-						if(translucentShadow.a < 0.9) sh2 = normalize(translucentShadow.rgb+0.0001);
+						if(translucentShadow.a < 0.9) sh2 = (translucentShadow.rgb+0.0001) / (max(max(translucentShadow.r, translucentShadow.g), translucentShadow.b) + 0.0001);
 					}
 				#else
 					sh2 *= vec3(texture(shadow, pos).x);

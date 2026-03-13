@@ -848,7 +848,21 @@ void main() {
   
   // apply multiplicative color blend for glass n stuff
   #ifdef Glass_Tint
-    if(!isWater && translucentCheck && !isBlockBreaking) color *= mix(normalize(albedo.rgb+1e-7), vec3(1.0), max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0))) ;
+    if(!isWater && translucentCheck && !isBlockBreaking) {
+        float mixFactor = max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0));
+
+        vec3 accumulatedTint = texelFetch(colortex12, ivec2(gl_FragCoord.xy), 0).rgb;
+        float maxAccum = max(max(accumulatedTint.r, accumulatedTint.g), accumulatedTint.b);
+
+        vec3 normalizedTint;
+        if (maxAccum > 1e-6) {
+            normalizedTint = accumulatedTint / maxAccum;
+        } else {
+            normalizedTint = (albedo.rgb + 1e-7) / (max(max(albedo.r, albedo.g), albedo.b) + 1e-7);
+        }
+
+        color *= mix(normalizedTint, vec3(1.0), mixFactor);
+    }
   #endif
 
   // blend forward rendered programs onto the color.

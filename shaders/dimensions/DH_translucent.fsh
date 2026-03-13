@@ -281,7 +281,7 @@ vec3 applyBump(mat3 tbnMatrix, vec3 bump, float puddle_values){
 #ifdef FORWARD_ROUGH_REFLECTION
 #endif
 
-/* RENDERTARGETS:2,7,11,14 */
+/* RENDERTARGETS:2,7,11,12,14 */
 void main() {
 if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	{
    
@@ -504,7 +504,15 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 		gl_FragData[2] = vec4(0.0, encodeVec2(GLASS_TINT_COLORS.rg), encodeVec2(GLASS_TINT_COLORS.ba), 0.5);
 	}
 
-	gl_FragData[3] = vec4(1, 1, encodeVec2(lightmapCoords.x, lightmapCoords.y), 1);
+	vec3 normalizedGlassTint = vec3(1.0);
+	float maxGlassTint = max(max(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
+	float minGlassTint = min(min(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
+	if (maxGlassTint > 1e-6 && (maxGlassTint - minGlassTint) > 0.01 && !iswater) {
+		normalizedGlassTint = GLASS_TINT_COLORS.rgb / maxGlassTint;
+	}
+	gl_FragData[3] = vec4(normalizedGlassTint, 1.0);
+
+	gl_FragData[4] = vec4(1, 1, encodeVec2(lightmapCoords.x, lightmapCoords.y), 1);
 
 }
 

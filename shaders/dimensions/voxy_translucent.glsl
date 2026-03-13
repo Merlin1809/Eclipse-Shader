@@ -4,6 +4,7 @@ layout (location = 0) out vec4 gbuffer_data_0;
 layout (location = 1) out vec4 gbuffer_data_1;
 layout (location = 2) out vec4 gbuffer_data_2;
 layout (location = 3) out vec4 gbuffer_data_3;
+layout (location = 4) out vec4 gbuffer_data_4;
 
 #include "/lib/settings.glsl"
 #include "/lib/blocks.glsl"
@@ -354,7 +355,15 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 
 	gbuffer_data_2 = vec4(0.0, encodeVec2(GLASS_TINT_COLORS.rg), encodeVec2(GLASS_TINT_COLORS.ba), 0.5);
 
-    gbuffer_data_3 = vec4(1, 1, encodeVec2(parameters.lightMap), 1);
+	vec3 normalizedGlassTint = vec3(1.0);
+	float maxGlassTint = max(max(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
+	float minGlassTint = min(min(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
+	if (maxGlassTint > 1e-6 && (maxGlassTint - minGlassTint) > 0.01 && !isWater) {
+		normalizedGlassTint = GLASS_TINT_COLORS.rgb / maxGlassTint;
+	}
+	gbuffer_data_3 = vec4(normalizedGlassTint, 1.0);
+
+    gbuffer_data_4 = vec4(1, 1, encodeVec2(parameters.lightMap), 1);
 
 }
 }
