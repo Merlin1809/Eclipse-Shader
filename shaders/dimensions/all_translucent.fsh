@@ -473,6 +473,7 @@ float ComputeShadowMap(inout vec3 directLightColor, vec3 playerPos, float maxDis
 	#endif
 
 	#ifdef TRANSLUCENT_COLORED_SHADOWS
+		// tint the lightsource color with the translucent shadow color
 		directLightColor *= mix(vec3(1.0), translucentTint.rgb / samples, maxDistFade);
 	#endif
 

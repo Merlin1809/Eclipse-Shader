@@ -1175,6 +1175,7 @@ float ComputePhotonicsShadowMap(inout vec3 directLightColor, vec3 playerPos, flo
 			float shadowAlpha = pow(1.0 - pow(translucentShadow.a,5.0),0.2);
 
 			// normalize the color to remove luminance, and keep the hue. remove all opaque color.
+			// mulitply shadow alpha to shadow color, but only on surfaces facing the lightsource. this is a tradeoff to protect subsurface scattering's colored shadow tint from shadow bias on the back of the caster.
 			#if LPV_COLOR_STYLE == 1
 			translucentShadow.rgb = max((translucentShadow.rgb + 0.0001) / (max(max(translucentShadow.r, translucentShadow.g), translucentShadow.b) + 0.0001), max(opaqueShadow, 1.0-shadowAlpha)) * shadowAlpha;
 			#else
