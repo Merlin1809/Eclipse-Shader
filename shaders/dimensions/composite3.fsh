@@ -848,6 +848,7 @@ void main() {
   
   // apply multiplicative color blend for glass n stuff
   #ifdef Glass_Tint
+    #if LPV_COLOR_STYLE == 1
     if(!isWater && translucentCheck && !isBlockBreaking) {
         float mixFactor = max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0));
 
@@ -863,6 +864,9 @@ void main() {
 
         color *= mix(normalizedTint, vec3(1.0), mixFactor);
     }
+    #else
+    if(!isWater && translucentCheck && !isBlockBreaking) color *= mix(normalize(albedo.rgb+1e-7), vec3(1.0), max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0))) ;
+    #endif
   #endif
 
   // blend forward rendered programs onto the color.

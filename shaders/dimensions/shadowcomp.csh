@@ -151,6 +151,7 @@ void main() {
         if (any(greaterThan(tintColor, vec3(0.0)))) {
             vec4 lightMixed = mixNeighbours(ivec3(gl_LocalInvocationID), mixMask);
 
+#if LPV_COLOR_STYLE == 1
             float maxTint = max(max(tintColor.r, tintColor.g), tintColor.b);
             float minTint = min(min(tintColor.r, tintColor.g), tintColor.b);
 
@@ -200,6 +201,9 @@ void main() {
             }
 
             lightMixed *= sqrt(maxTint);
+#else
+            lightMixed.rgb *= tintColor;
+#endif
             lightValue += lightMixed;
         }
 

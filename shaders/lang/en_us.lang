@@ -225,6 +225,9 @@ screen.Direct_Light = Direct Light
         
     screen.LPV = FloodFill (Colored Lights)
         option.LPV_ENABLED = Enabled
+        option.LPV_COLOR_STYLE = Propagation Style
+            value.LPV_COLOR_STYLE.1 = Colourful
+            value.LPV_COLOR_STYLE.2 = Default
         option.LPV_SIZE = Size
             value.LPV_SIZE.6 = Small [64]
             value.LPV_SIZE.7 = Medium [128]
@@ -1040,6 +1043,7 @@ screen.Ambient_light.comment = Configure settings related to the lighting in sha
     screen.Ambient_Colors.comment = Configure the color of light in shaded areas.
     screen.Torch_Colors.comment = Configure the color of light from torches or other placed lightsources.
 
+    option.LPV_COLOR_STYLE.comment = Configures the color mixing logic during floodfill light propagation. Colourful uses a more vibrant RYB blending method. It is highly recommended to use a Light Saturation of 100% or more when Colourful is selected.
     option.LPV_SIZE.comment = Configures the size (in blocks) of the volume for colored lighting.
     option.LPV_SATURATION.comment = Configures the intensity of colored lighting.
     option.LPV_TINT_SATURATION.comment = Configures the intensity of tinting by translucent blocks on colored lighting.
