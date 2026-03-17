@@ -192,6 +192,7 @@ void main() {
                                  newRybH;
 
                     lightHsv.y = max(lightHsv.y, tintHsv.y);
+                    lightHsv.y *= LPV_SATURATION / 100.0;
                     lightHsv.z *= sqrt(transmittance);
 
                     lightMixed.rgb = HsvToRgb(lightHsv);
