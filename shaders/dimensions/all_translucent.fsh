@@ -455,11 +455,7 @@ float ComputeShadowMap(inout vec3 directLightColor, vec3 playerPos, float maxDis
 
 			// normalize the color to remove luminance, and keep the hue. remove all opaque color.
 			// mulitply shadow alpha to shadow color, but only on surfaces facing the lightsource. this is a tradeoff to protect subsurface scattering's colored shadow tint from shadow bias on the back of the caster.
-			#if LPV_COLOR_STYLE == 1
-			translucentShadow.rgb = max((translucentShadow.rgb + 0.0001) / (max(max(translucentShadow.r, translucentShadow.g), translucentShadow.b) + 0.0001), max(opaqueShadow, 1.0-shadowAlpha)) * shadowAlpha;
-			#else
 			translucentShadow.rgb = max(normalize(translucentShadow.rgb + 0.0001), max(opaqueShadow, 1.0-shadowAlpha)) * shadowAlpha;
-			#endif
 
 			// make it such that full alpha areas that arent in a shadow have a value of 1.0 instead of 0.0
 			translucentTint += mix(translucentShadow.rgb, vec3(1.0),  opaqueShadow*shadowDepthDiff);
@@ -585,7 +581,7 @@ float SSRT_FlashLight_Shadows(vec3 viewPos, bool depthCheck, vec3 lightDir, floa
 //////////////////////////////VOID MAIN//////////////////////////////
 //////////////////////////////VOID MAIN//////////////////////////////
 
-/* RENDERTARGETS:2,7,11,12,14 */
+/* RENDERTARGETS:2,7,11,14 */
 
 
 void main() {
@@ -1163,14 +1159,6 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 
 	gl_FragData[1] = vec4(Albedo, MATERIALS);
 
-	vec3 normalizedGlassTint = vec3(1.0);
-	float maxGlassTint = max(max(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
-	float minGlassTint = min(min(GLASS_TINT_COLORS.r, GLASS_TINT_COLORS.g), GLASS_TINT_COLORS.b);
-	if (maxGlassTint > 1e-6 && (maxGlassTint - minGlassTint) > 0.01 && !isWater) {
-		normalizedGlassTint = GLASS_TINT_COLORS.rgb / maxGlassTint;
-	}
-	gl_FragData[3] = vec4(normalizedGlassTint, 1.0);
-
 	#if DEBUG_VIEW == debug_DH_WATER_BLENDING
 		if(gl_FragCoord.x*texelSize.x < 0.47) gl_FragData[0] = vec4(0.0);
 	#endif
@@ -1185,7 +1173,7 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 		gl_FragData[0].rgb = Direct_lighting * 0.1;
 	#endif
 
-	gl_FragData[4] = vec4(1, 1, encodeVec2(lightmap.x, lightmap.y), 1);
+	gl_FragData[3] = vec4(1, 1, encodeVec2(lightmap.x, lightmap.y), 1);
 
 	#if defined ENTITIES && defined IS_IRIS && !defined COLORWHEEL
 		if(NAMETAG > 0) {
