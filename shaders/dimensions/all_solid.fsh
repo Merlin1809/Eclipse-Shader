@@ -445,7 +445,7 @@ void main() {
 	 if (falloff > 0.0)
 	#endif
 	{
-		float depthmap = readNormal(data_in.texcoord.st).a;
+		float depthmap = readNormal(clamp(data_in.texcoord.st, data_in.texcoordam.st, data_in.texcoordam.st + data_in.texcoordam.pq)).a;
 		float pomdepth = POM_DEPTH * falloff;
 
  		if ( viewVector.z < 0.0 && depthmap < 0.9999 && depthmap > 0.00001) {	

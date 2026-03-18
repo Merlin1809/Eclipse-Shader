@@ -349,7 +349,7 @@ void main() {
 		float maxdist = MAX_OCCLUSION_DISTANCE;
 		if (dist < maxdist) {
 
-			float depthmap = readNormal(texcoord.st).a;
+			float depthmap = readNormal(clamp(texcoord.st, texcoordam.st, texcoordam.st + texcoordam.pq)).a;
 			float used_POM_DEPTH = 1.0;
 
 	 		if ( viewVector.z < 0.0 && depthmap < 0.9999 && depthmap > 0.00001) {	
