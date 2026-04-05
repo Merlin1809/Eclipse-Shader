@@ -74,7 +74,7 @@ Note: With default settings there is at least one guaranteed eclipse per ingame 
 
 # You want MOAR performance?
 > [!NOTE]  
-> My "[Iris Extension](https://github.com/Merlin1809/IrisExtension)" mod automatically does this when shader grass is disabled, there is no need to manually delete the files if you are using my mod!
+> My "[Iris Extension](https://modrinth.com/mod/iris-extension)" mod automatically does this when shader grass is disabled, there is no need to manually delete the files if you are using my mod!
 
  Delete the "gbuffers_terrain.gsh", "gbuffers_terrain.tcs" and "gbuffers_terrain.tes" files for all world folders in the shader.
  This will make the shader grass setting non functional BUT will increase performance, especially with high vanilla render distances!

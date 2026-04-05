@@ -21,7 +21,11 @@
 
 in DATA {
 	vec4 lmtexcoord;
-	vec4 color;
+	#if defined LIGHTNING || defined ENTITIES
+		vec4 color;
+	#else
+		vec3 color;
+	#endif
 
 	vec3 viewVector;
 
@@ -635,9 +639,14 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 	#ifndef COLORWHEEL
 		#ifdef IRIS_FEATURE_TEXTURE_FILTERING
 		gl_FragData[0] = textureFilteringMode == 1 ? sampleRGSS(gtexture, lmtexcoord.xy, 1.0 / vec2(textureSize(gtexture, 0))) : sampleNearest(gtexture, lmtexcoord.xy, 1.0 / vec2(textureSize(gtexture, 0)));
-		gl_FragData[0] *= color;
 		#else
-		gl_FragData[0] = texture(gtexture, lmtexcoord.xy, mipmapBias) * color;
+		gl_FragData[0] = texture(gtexture, lmtexcoord.xy, mipmapBias);
+		#endif
+
+		gl_FragData[0].rgb *= color.rgb;
+
+		#if defined LIGHTNING || defined ENTITIES
+			gl_FragData[0].a *= color.a;
 		#endif
 	#else
 		vec4 _color = texture(gtexture, lmtexcoord.xy, mipmapBias);
@@ -1156,6 +1165,8 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 			MATERIALS = 0.0;
 		}
 	#endif
+
+	if(gl_FragData[0].a == 0.0) discard;
 
 	gl_FragData[1] = vec4(Albedo, MATERIALS);
 

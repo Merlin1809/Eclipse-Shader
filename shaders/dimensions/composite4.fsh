@@ -848,7 +848,11 @@ void main() {
   
   // apply multiplicative color blend for glass n stuff
   #ifdef Glass_Tint
-    if(!isWater && translucentCheck && !isBlockBreaking) color *= mix(normalize(albedo.rgb+1e-7), vec3(1.0), max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0))) ;
+    if(
+      #ifndef BIOME_TINT_WATER
+      !isWater &&
+      #endif
+      translucentCheck && !isBlockBreaking) color *= mix(normalize(albedo.rgb+1e-7), vec3(1.0), max(borderFog.a, min(max(0.1-albedo.a,0.0) * 10.0,1.0))) ;
   #endif
 
   // blend forward rendered programs onto the color.

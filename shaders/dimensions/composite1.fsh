@@ -1706,7 +1706,7 @@ void main() {
 			vec4 reflections = vec4(0.0,0.0,0.0,1.0);
 			float SunReflectionAlpha = 0.0;
 			
-			FINAL_COLOR = specularReflections(viewPos, feetPlayerPos, feetPlayerPos_normalized, WsunVec, specularNoises, FlatNormals, specularNormal, SpecularTex.r, SpecularTex.g, albedo, FINAL_COLOR, DirectLightColor*shadowColor*shadowColor, lightmap.y, hand, reflections, SunReflectionAlpha, flashLightSpecularData);
+			FINAL_COLOR = specularReflections(viewPos, feetPlayerPos, feetPlayerPos_normalized, WsunVec, specularNoises, FlatNormals, specularNormal, SpecularTex.r, SpecularTex.g, albedo, FINAL_COLOR, DirectLightColor*shadowColor*shadowColor, lightmap.y, hand, reflections, SunReflectionAlpha, isShaderGrass, flashLightSpecularData);
 
 			#if defined DEFERRED_SPECULAR && defined DENOISED_REFLECTIONS
 			gl_FragData[1] = reflections;

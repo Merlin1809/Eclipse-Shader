@@ -460,6 +460,11 @@ void main() {
       float opaqueMasks = dataUnpacked1.w;
       bool hand = abs(opaqueMasks-0.75) < 0.01;
       bool entities = abs(opaqueMasks-0.45) < 0.01;
+      #ifdef SHADER_GRASS
+        bool isShaderGrass = abs(opaqueMasks-0.80) < 0.01;
+      #else
+        const bool isShaderGrass = false;
+      #endif
 
       vec3 viewPos = toScreenSpace(vec3(texcoord/RENDER_SCALE, z));
 
@@ -543,7 +548,7 @@ void main() {
       #endif
 
       #if defined Hand_Held_lights && defined IS_LPV_ENABLED
-        if(!hand && firstPersonCamera) {
+        if(!hand && firstPersonCamera && !isShaderGrass) {
           if (heldItemId > 0){
             vec3 shiftedViewPos = viewPos + vec3(-0.25, 0.2, 0.0);
             vec3 shiftedPlayerPos = mat3(gbufferModelViewInverse) * shiftedViewPos + gbufferModelViewInverse[3].xyz + (cameraPosition - previousCameraPosition);

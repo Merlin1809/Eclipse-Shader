@@ -24,7 +24,11 @@ Read the terms of modification and sharing before changing something below pleas
 
 out DATA {
 	vec4 lmtexcoord;
-	vec4 color;
+	#if defined LIGHTNING || defined ENTITIES
+		vec4 color;
+	#else
+		vec3 color;
+	#endif
 
 	vec3 viewVector;
 
@@ -134,8 +138,8 @@ void main() {
 
 	gl_Position = ftransform();
 
-	color = vec4(gl_Color.rgb, 1.0);
-	#ifdef LIGHTNING
+	color.rgb = gl_Color.rgb;
+	#if defined LIGHTNING || defined ENTITIES
 		color.a = gl_Color.a;
 	#endif
 
