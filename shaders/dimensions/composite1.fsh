@@ -1786,8 +1786,7 @@ void main() {
 						float u = dot(dirDiff, tangent);
 						float v = dot(dirDiff, binormal);
 
-						float moonSize = MOON_SIZE;
-						float moonAngularRadius = acos(moonSize); 
+						float moonAngularRadius = acos(0.9994) * MOON_SIZE; 
 
 						u = u / (2.0 * moonAngularRadius) + 0.5;
 						v = -v / (2.0 * moonAngularRadius) + 0.5;
@@ -1799,9 +1798,8 @@ void main() {
 							float moonVis = smoothstep(0.08, -0.03, WmoonVec.y);
 
 							vec2 pos = 2.0 * moonUV - 1.0;
-							float r2 = dot(pos, pos); // we got 'em r2
 
-							vec3 moonDirLocal = normalize(vec3(pos.x, pos.y, sqrt(1.0 - r2)));
+							vec3 moonDirLocal = normalize(vec3(pos.x, pos.y, sqrt(1.0 - dot(pos, pos))));
 
 							vec3 moonDirWorld = moonDirLocal.x * tangent - moonDirLocal.y * binormal - moonDirLocal.z * WmoonVec;
 
@@ -1846,7 +1844,7 @@ void main() {
 						#endif
 						
 						vec3 moonLightCol = moonColorBase2;
-						Background += pow(moonTex, vec3(3.2)) * 12.0 * drawRealMoon(feetPlayerPos_normalized, WmoonVec, moonLightCol, Background, moonSize);
+						Background += pow(moonTex, vec3(3.2)) * 12.0 * drawRealMoon(feetPlayerPos_normalized, WmoonVec, moonLightCol, Background);
 					#else
 						vec3 moonLightCol = moonColorSSBO / 2400.0;
 						Background += drawMoon(feetPlayerPos_normalized, WmoonVec, moonLightCol, Background); 

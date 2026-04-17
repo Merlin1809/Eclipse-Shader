@@ -1,6 +1,6 @@
 option.SHADER_VERSION_LABEL = §d§lECLIPSE§r - Bliss 编辑版
     prefix.SHADER_VERSION_LABEL = 版本
-    value.SHADER_VERSION_LABEL.482 = 8.1.0
+    value.SHADER_VERSION_LABEL.482 = 8.1.1
 
 # 如果你是来翻译的，这不是玩笑，这些选项的功能正如其名
 profile.POTATO=§4土豆 (极低配置)
@@ -61,7 +61,7 @@ screen.CUSTOM_MOON_SETTINGS = 自定义月亮设置
     option.CUSTOM_MOON_ROTATION = 自定义月亮旋转
     option.CAELUM_SUPPORT = Caelum (ArdaCraft) 支持
         option.CAELUM_SUPPORT.comment = §c需要自定义月亮旋转。§r 将太阳/月亮投射的光线更改为 Caelum 指定的正确位置。
-    option.MOON_SIZE_SETTING = 月亮大小
+    option.MOON_SIZE = 月亮大小
     option.MOON_LATITUDE = 纬度
         suffix.MOON_LATITUDE = °
     option.MONTH_LENGTH = 月份长度

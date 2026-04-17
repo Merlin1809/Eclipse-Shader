@@ -1,6 +1,6 @@
 option.SHADER_VERSION_LABEL = §d§lECLIPSE§r - A Bliss Edit
     prefix.SHADER_VERSION_LABEL = V
-    value.SHADER_VERSION_LABEL.482 = 8.1.0
+    value.SHADER_VERSION_LABEL.482 = 8.1.1
 
 iris_extension.keybind.key0.name=Flashlight
 
@@ -59,7 +59,8 @@ screen.CUSTOM_MOON_SETTINGS = Custom Moon Settings
     option.CUSTOM_MOON_ROTATION = Custom Moon Rotation
     option.CAELUM_SUPPORT = Caelum (ArdaCraft) Support
         option.CAELUM_SUPPORT.comment = §cREQUIRES CUSTOM MOON ROTATION.§r Changes the light casted by the sun/moon to the correct position specified by Caelum.
-    option.MOON_SIZE_SETTING = Moon Size
+    option.MOON_SIZE = Moon Size
+    option.SUN_SIZE = Sun Size
     option.MOON_LATITUDE = Latitude
         suffix.MOON_LATITUDE = °
     option.MONTH_LENGTH = Month Length

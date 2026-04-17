@@ -32,10 +32,9 @@ out DATA {
 #endif
 
 #include "/lib/blocks.glsl"
-
+in vec4 mc_Entity;
 
 #if defined IS_LPV_ENABLED || (WATER_INTERACTION == 2 && IRIS_VERSION < 11004)  || defined SHADER_GRASS
-	in vec4 mc_Entity;
 	#ifdef IRIS_FEATURE_BLOCK_EMISSION_ATTRIBUTE
 		in vec4 at_midBlock;
 	#else

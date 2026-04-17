@@ -264,7 +264,7 @@ vec4 raymarchLPV(
 		#if defined FLASHLIGHT && defined FLASHLIGHT_FOG_ILLUMINATION
 
 			#ifdef IEXT_ENABLED
-				if (!IEXT_KEY_0) continue;
+				if (IEXT_KEY_0) continue;
 			#endif
 
 			// vec3 shiftedViewPos = mat3(gbufferModelView)*(progressW-cameraPosition) + vec3(-0.25, 0.2, 0.0);

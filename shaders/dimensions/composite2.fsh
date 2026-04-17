@@ -303,7 +303,7 @@ uniform bool IEXT_KEY_0;
 
 vec4 calculateFlashlightData(in vec3 viewPos, bool hand){
     #ifdef IEXT_ENABLED
-    if(!IEXT_KEY_0) return vec4(0.0);
+    if(IEXT_KEY_0) return vec4(0.0);
     #endif
 
   vec4 flashLightSpecularData = vec4(0.0);
