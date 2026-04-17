@@ -1757,16 +1757,19 @@ void main() {
 							float u2 = dot(dirDiff2, tangent2);
 							float v2 = dot(dirDiff2, binormal2);
 
-							float sunAngularRadius = acos(0.9984); 
+							float sunAngularRadius = acos(0.9984)*SUN_SIZE*0.01;
+							float mult = 1.0;
+							#if SUN_SIZE > MOON_SIZE
+								mult = smoothstep(1.3, 1.1, float(SUN_SIZE)/float(MOON_SIZE));
+							#endif
+
 
 							u2 = u2 / (2.0 * sunAngularRadius) + 0.5;
 							v2 = -v2 / (1.96 * sunAngularRadius) + 0.505;
 
-							if (u2 > 0.0 && u2 < 1.0 && v2 > 0.0 && v2 < 1.0) {
-								vec2 coronaUV = vec2(u2, v2);
-								vec3 coronaTex = texture(CoronaTex, coronaUV).rgb;
-								Background += 0.5 * coronaTex * coronaTex * coronaTex * coronaTex * coronaTex * smoothstep(0.004, 0.0002, sunMoonDist);
-							}
+							vec2 coronaUV = vec2(u2, v2);
+							vec3 coronaTex = texture(CoronaTex, coronaUV).rgb;
+							Background += 0.5 * coronaTex * coronaTex * coronaTex * coronaTex * coronaTex * smoothstep(0.004, 0.0002, sunMoonDist)*mult;
 						}
 					#endif
 
@@ -1786,7 +1789,7 @@ void main() {
 						float u = dot(dirDiff, tangent);
 						float v = dot(dirDiff, binormal);
 
-						float moonAngularRadius = acos(0.9994) * MOON_SIZE; 
+						float moonAngularRadius = acos(0.9994) * MOON_SIZE * 0.01; 
 
 						u = u / (2.0 * moonAngularRadius) + 0.5;
 						v = -v / (2.0 * moonAngularRadius) + 0.5;
