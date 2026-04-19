@@ -670,14 +670,12 @@ void main() {
 
 	normal = applyBump(tbnMatrix, NormalTex.xyz);
 	
-	vec2 lightmap = clamp(lmtexcoord.zw,0.0,1.0);
+	vec2 lightmap = clamp(lmtexcoord.zw,0.0,0.97);
 	
 	vec4 data1 = vec4(encodeNormal(normal), lightmap);
 
 	Albedo = clamp(vec4(Albedo.rgb,0.85),0.0,1.0);
 	data1 = clamp(data1,0.0,1.0);
-
-	if(tangent.x == 0.0 && tangent.y == 0.0 && tangent.z == 0.0) discard;
 
 	OutAlbedo = vec4(
 		encodeVec2(Albedo.x,data1.x),

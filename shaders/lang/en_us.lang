@@ -1,6 +1,6 @@
 option.SHADER_VERSION_LABEL = §d§lECLIPSE§r - A Bliss Edit
     prefix.SHADER_VERSION_LABEL = V
-    value.SHADER_VERSION_LABEL.482 = 8.1.1
+    value.SHADER_VERSION_LABEL.482 = 8.2.0
 
 iris_extension.keybind.key0.name=Flashlight
 
@@ -963,6 +963,8 @@ option.EMISSIVE_TRIMS_STRENGTH = Emissive Trims Brightness
 
 option.PLANET_CURVATURE = Planet Curvature §c(VOXY NOT SUPPORTED!)
 option.CURVATURE_AMOUNT = Curvature Amount
+
+option.SHADER_END_PORTAL = Shader End Portal Effect §c(1.21.11 and below!)
 
 option.VANILLA_CHUNK_FADING = Chunks Fade In §c(Iris 1.10.3+)
 value.VANILLA_CHUNK_FADING.0 = Off

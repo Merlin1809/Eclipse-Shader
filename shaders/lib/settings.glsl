@@ -1072,6 +1072,11 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 #ifdef WAVING_MULTIPART_GRASS
 #endif
 
+#define SHADER_END_PORTAL
+
+#ifdef SHADER_END_PORTAL
+#endif
+
 ///////////////////////////////////////////
 // ----- DISTANT HORIZONS SETTINGS ----- //
 ///////////////////////////////////////////

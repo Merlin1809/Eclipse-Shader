@@ -232,6 +232,15 @@ vec3 viewToWorld(vec3 viewPos) {
 	uniform float caveDetection;
 #endif
 
+#if defined BLOCKENTITIES && !defined COLORWHEEL && (MC_VERSION >= 260100 || !defined SHADER_END_PORTAL)
+	vec4 projection_from_position(vec4 position) {
+		vec4 projection = position * 0.5;
+		projection.xy = vec2(projection.x + projection.w, projection.y + projection.w);
+		projection.zw = position.zw;
+		return projection;
+	}
+#endif
+
 //////////////////////////////VOID MAIN//////////////////////////////
 //////////////////////////////VOID MAIN//////////////////////////////
 //////////////////////////////VOID MAIN//////////////////////////////
@@ -295,7 +304,7 @@ void main() {
 
 	#if defined WORLD && !defined HAND
 		#ifdef BLOCKENTITIES
-			if(blockEntityId == BLOCK_END_PORTAL || blockEntityId == 187) {
+			if(blockEntityId == BLOCK_END_PORTAL || blockEntityId == BLOCK_END_GATEWAY) {
 				data_out.lmtexcoord.w = 0.0;
 			}
 		#endif
@@ -499,5 +508,9 @@ void main() {
 			uint blockBelow = GetVoxelBlock(ivec3(LPVpos.x, LPVpos.y - 0.6, LPVpos.z));
 			if(blockBelow == 85) gl_Position.z -= 10000.0;
 		}
+	#endif
+	
+	#if defined BLOCKENTITIES && !defined COLORWHEEL && (MC_VERSION >= 260100 || !defined SHADER_END_PORTAL)
+		if(data_out.blockID == BLOCK_END_PORTAL || data_out.blockID == BLOCK_END_GATEWAY)data_out.lmtexcoord = projection_from_position(gl_Position);
 	#endif
 }

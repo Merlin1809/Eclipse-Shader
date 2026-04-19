@@ -496,10 +496,10 @@ void main() {
             lightRange = 10.0;
         }
 
-        if (blockId == BLOCK_END_GATEWAY) {
-            lightColor = vec3(1.0);
-            lightRange = 15.0;
-        }
+        // if (blockId == BLOCK_END_GATEWAY) {
+        //     lightColor = vec3(1.0);
+        //     lightRange = 15.0;
+        // }
 
         if (blockId == BLOCK_END_ROD || blockId == ITEM_END_ROD) {
             lightColor = vec3(0.957, 0.929, 0.875);

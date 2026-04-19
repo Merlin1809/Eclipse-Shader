@@ -339,6 +339,56 @@ float getTrimEmission(vec3 Albedo) {
     return sqrt(hsv.z);
 }
 
+#if defined BLOCKENTITIES && !defined COLORWHEEL && (MC_VERSION >= 260100 || !defined SHADER_END_PORTAL)
+	mat2 mat2_rotate_z(float radians) {
+		return mat2(
+			cos(radians), -sin(radians),
+			sin(radians), cos(radians)
+		);
+	}
+
+	const vec3[] COLORS = vec3[](
+		vec3(0.022087, 0.098399, 0.110818),
+		vec3(0.011892, 0.095924, 0.089485),
+		vec3(0.027636, 0.101689, 0.100326),
+		vec3(0.046564, 0.109883, 0.114838),
+		vec3(0.064901, 0.117696, 0.097189),
+		vec3(0.063761, 0.086895, 0.123646),
+		vec3(0.084817, 0.111994, 0.166380),
+		vec3(0.097489, 0.154120, 0.091064),
+		vec3(0.106152, 0.131144, 0.195191),
+		vec3(0.097721, 0.110188, 0.187229),
+		vec3(0.133516, 0.138278, 0.148582),
+		vec3(0.070006, 0.243332, 0.235792),
+		vec3(0.196766, 0.142899, 0.214696),
+		vec3(0.047281, 0.315338, 0.321970),
+		vec3(0.204675, 0.390010, 0.302066),
+		vec3(0.080955, 0.314821, 0.661491)
+	);
+
+	const mat4 SCALE_TRANSLATE = mat4(
+		0.5, 0.0, 0.0, 0.25,
+		0.0, 0.5, 0.0, 0.25,
+		0.0, 0.0, 1.0, 0.0,
+		0.0, 0.0, 0.0, 1.0
+	);
+
+	mat4 end_portal_layer(float layer) {
+		mat4 translate = mat4(
+			1.0, 0.0, 0.0, 17.0 / layer,
+			0.0, 1.0, 0.0, (2.0 + layer / 1.5) * (frameTimeCounter * 0.0011),
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 0.0, 1.0
+		);
+
+		mat2 rotate = mat2_rotate_z(radians((layer * layer * 4321.0 + layer * 9.0) * 2.0));
+
+		mat2 scale = mat2((4.5 - layer / 4.0) * 2.0);
+
+		return mat4(scale * rotate) * translate * SCALE_TRANSLATE;
+	}
+#endif
+
 uniform float alphaTestRef;
 
 //////////////////////////////VOID MAIN//////////////////////////////
@@ -616,61 +666,75 @@ void main() {
 	#endif
 	
 	#if defined WORLD && !defined ENTITIES && !defined HAND && defined BLOCKENTITIES && !defined COLORWHEEL && !defined CUTOUT
-		bool PORTAL = data_in.blockID == BLOCK_END_PORTAL || data_in.blockID == 187;
+		bool PORTAL = data_in.blockID == BLOCK_END_PORTAL || data_in.blockID == BLOCK_END_GATEWAY;
 
 		float endPortalEmission = 0.0;
 		if(PORTAL) {
-			const float steps = 20.0;
+		#if MC_VERSION < 260100 && defined SHADER_END_PORTAL
+				const float steps = 20.0;
 
-			vec3 color = vec3(0.0);
-			float absorbance = 1.0;
+				vec3 color = vec3(0.0);
+				float absorbance = 1.0;
 
-			vec3 worldSpaceNormal = flatNormals;
+				vec3 worldSpaceNormal = flatNormals;
 
-			vec3 viewVec = normalize(tbnMatrix*fragpos);
-			vec3 correctedViewVec = viewVec;
-			
-			correctedViewVec.xy = mix(correctedViewVec.xy, vec2( viewVec.y,-viewVec.x), clamp( worldSpaceNormal.y,0,1));
-			correctedViewVec.xy = mix(correctedViewVec.xy, vec2(-viewVec.y, viewVec.x), clamp(-worldSpaceNormal.x,0,1)); 
-			correctedViewVec.xy = mix(correctedViewVec.xy, vec2(-viewVec.y, viewVec.x), clamp(-worldSpaceNormal.z,0,1));
-			
-			correctedViewVec.z = mix(correctedViewVec.z, -correctedViewVec.z, clamp(length(vec3(worldSpaceNormal.xz, clamp(-worldSpaceNormal.y,0,1))),0,1)); 
-			
-			vec2 correctedWorldPos = playerpos.xz + cameraPosition.xz;
-			correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.x,playerpos.z)	+	vec2(-cameraPosition.x,cameraPosition.z),	clamp(-worldSpaceNormal.y,0,1));
-			correctedWorldPos = mix(correctedWorldPos,	vec2( playerpos.z,playerpos.y)	+	vec2( cameraPosition.z,cameraPosition.y),	clamp( worldSpaceNormal.x,0,1));
-			correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.z,playerpos.y)	+	vec2(-cameraPosition.z,cameraPosition.y),	clamp(-worldSpaceNormal.x,0,1));
-			correctedWorldPos = mix(correctedWorldPos,	vec2( playerpos.x,playerpos.y)	+	vec2( cameraPosition.x,cameraPosition.y),	clamp(-worldSpaceNormal.z,0,1));
-			correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.x,playerpos.y)	+	vec2(-cameraPosition.x,cameraPosition.y),	clamp( worldSpaceNormal.z,0,1));
-
-
-			vec2 rayDir = ((correctedViewVec.xy) / -correctedViewVec.z) / steps * 5.0 ;
-		
-			vec2 uv = correctedWorldPos + rayDir * BN;
-			uv += rayDir * 10.0;
-
-			vec2 animation = vec2(frameTimeCounter, -frameTimeCounter)*0.01;
-			
-			for (int i = 0; i < int(steps); i++) {
+				vec3 viewVec = normalize(tbnMatrix*fragpos);
+				vec3 correctedViewVec = viewVec;
 				
-				float verticalGradient = (i + BN)/steps ;
-				float verticalGradient2 = exp(-7*(1-verticalGradient*verticalGradient));
-			
-				float density = max(max(verticalGradient - texture(noisetex, uv/256.0 + animation.xy).b*0.5,0.0) - (1.0-texture(noisetex, uv/32.0 + animation.xx).r) * (0.4 + 0.1 * (texture(noisetex, uv/10.0 - animation.yy).b)),0.0);
-			
-				float volumeCoeff = exp(-density*(i+1));
+				correctedViewVec.xy = mix(correctedViewVec.xy, vec2( viewVec.y,-viewVec.x), clamp( worldSpaceNormal.y,0,1));
+				correctedViewVec.xy = mix(correctedViewVec.xy, vec2(-viewVec.y, viewVec.x), clamp(-worldSpaceNormal.x,0,1)); 
+				correctedViewVec.xy = mix(correctedViewVec.xy, vec2(-viewVec.y, viewVec.x), clamp(-worldSpaceNormal.z,0,1));
 				
-				vec3 lighting =  vec3(0.5,0.75,1.0) * 0.1 * exp(-10*density) + vec3(0.8,0.3,1.0) * verticalGradient2 * 1.7;
-				color += (lighting - lighting * volumeCoeff) * absorbance;;
+				correctedViewVec.z = mix(correctedViewVec.z, -correctedViewVec.z, clamp(length(vec3(worldSpaceNormal.xz, clamp(-worldSpaceNormal.y,0,1))),0,1)); 
+				
+				vec2 correctedWorldPos = playerpos.xz + cameraPosition.xz;
+				correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.x,playerpos.z)	+	vec2(-cameraPosition.x,cameraPosition.z),	clamp(-worldSpaceNormal.y,0,1));
+				correctedWorldPos = mix(correctedWorldPos,	vec2( playerpos.z,playerpos.y)	+	vec2( cameraPosition.z,cameraPosition.y),	clamp( worldSpaceNormal.x,0,1));
+				correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.z,playerpos.y)	+	vec2(-cameraPosition.z,cameraPosition.y),	clamp(-worldSpaceNormal.x,0,1));
+				correctedWorldPos = mix(correctedWorldPos,	vec2( playerpos.x,playerpos.y)	+	vec2( cameraPosition.x,cameraPosition.y),	clamp(-worldSpaceNormal.z,0,1));
+				correctedWorldPos = mix(correctedWorldPos,	vec2(-playerpos.x,playerpos.y)	+	vec2(-cameraPosition.x,cameraPosition.y),	clamp( worldSpaceNormal.z,0,1));
 
-				absorbance *= volumeCoeff;
-				endPortalEmission += verticalGradient*verticalGradient ;
-				uv += rayDir;
-			}
 
-			Albedo.rgb = clamp(color,0,1);
-			endPortalEmission = clamp(endPortalEmission/steps * 1.0,0.0,254.0/255.0);
+				vec2 rayDir = ((correctedViewVec.xy) / -correctedViewVec.z) / steps * 5.0 ;
 			
+				vec2 uv = correctedWorldPos + rayDir * BN;
+				uv += rayDir * 10.0;
+
+				vec2 animation = vec2(frameTimeCounter, -frameTimeCounter)*0.01;
+				
+				for (int i = 0; i < int(steps); i++) {
+					
+					float verticalGradient = (i + BN)/steps ;
+					float verticalGradient2 = exp(-7*(1-verticalGradient*verticalGradient));
+				
+					float density = max(max(verticalGradient - texture(noisetex, uv/256.0 + animation.xy).b*0.5,0.0) - (1.0-texture(noisetex, uv/32.0 + animation.xx).r) * (0.4 + 0.1 * (texture(noisetex, uv/10.0 - animation.yy).b)),0.0);
+				
+					float volumeCoeff = exp(-density*(i+1));
+					
+					vec3 lighting =  vec3(0.5,0.75,1.0) * 0.1 * exp(-10*density) + vec3(0.8,0.3,1.0) * verticalGradient2 * 1.7;
+					color += (lighting - lighting * volumeCoeff) * absorbance;;
+
+					absorbance *= volumeCoeff;
+					endPortalEmission += verticalGradient*verticalGradient ;
+					uv += rayDir;
+				}
+
+				Albedo.rgb = clamp(color,0,1);
+				endPortalEmission = clamp(endPortalEmission/steps * 1.0,0.0,254.0/255.0);
+
+			#else
+				int PORTAL_STEPS = 16;
+				if(data_in.blockID == BLOCK_END_PORTAL) PORTAL_STEPS = 15;
+
+				Albedo.rgb = textureProj(gtexture, data_in.lmtexcoord).rgb * COLORS[0];
+				for (int i = 0; i < PORTAL_STEPS; i++) {
+					Albedo.rgb += textureProj(gtexture, data_in.lmtexcoord * end_portal_layer(float(i + 1))).rgb * COLORS[i];
+				}
+				Albedo.rgb *= 0.3;
+				torchlightmap = 0.0;
+				lmcoord.y = 0.0;
+				endPortalEmission = 0.9;
+			#endif
 		}
 	#endif
 	
