@@ -15,7 +15,7 @@ uniform sampler2D depthtex2;
 uniform sampler2D noisetex;
 uniform sampler2D shadowcolor1;
 
-#if !defined IS_IRIS || (defined SHADER_GRASS_SETTING && MC_VERSION < 12101 && !defined SHADER_GRASS_UNSUPPORTED_FIX)
+#if !defined IS_IRIS || (defined SHADER_GRASS_SETTING && MC_VERSION < 12101 && !defined SHADER_GRASS_UNSUPPORTED_FIX) || defined EXPLODE_THE_SHADER
   #include "/lib/text_rendering.glsl"
 #endif
 
@@ -302,5 +302,18 @@ void main() {
     #elif DEBUG_VIEW == debug_radiosity_GI
       gl_FragColor.rgb = vec3(texture(colortex15, texcoord).rgb);
     #endif
+  #endif
+
+  #ifdef EXPLODE_THE_SHADER
+    gl_FragColor.rgb = vec3(0.0);
+    beginText(ivec2(gl_FragCoord.xy/vec2(6.0, 8.0)), ivec2(0.05*viewWidth/6.0, 0.75*viewHeight/8.0));
+    text.fgCol = vec4(1.0, 0.0, 0.0, 1.0);
+    printString((_D, _o, _space, _N, _O, _T, _space, _u, _s, _e, _space, _b, _o, _t, _h, _space, _D, _i, _s, _t, _a, _n, _t, _space, _H, _o, _r, _i, _z, _o, _n, _s, _space));
+    printLine();
+    printString((_a, _n, _d, _space, _V, _o, _x, _y, _space, _t, _o, _g, _e, _t, _h, _e, _r, _exclm));
+    printLine();
+    printLine();
+    printString((_D, _i, _s, _a, _b, _l, _e, _space, _o, _n, _e, _space, _o, _f, _space, _t, _h, _e, _m, _exclm));
+    endText(gl_FragColor.rgb);
   #endif
 }

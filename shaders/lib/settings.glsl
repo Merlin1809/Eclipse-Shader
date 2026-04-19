@@ -1369,6 +1369,10 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 	#undef CLOUDS_SHADOWS
 #endif
 
+#if defined VOXY && defined DISTANT_HORIZONS
+	#define EXPLODE_THE_SHADER
+#endif
+
 #ifdef VOXY
 #undef DISTANT_HORIZONS
 #endif

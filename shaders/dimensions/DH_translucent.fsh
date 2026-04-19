@@ -19,10 +19,8 @@ uniform sampler2D noisetex;
 const bool shadowHardwareFiltering = true;
 uniform sampler2DShadow shadowtex0HW;
 
-#ifdef DISTANT_HORIZONS
 uniform sampler2D dhDepthTex;
 uniform sampler2D dhDepthTex1;
-#endif
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 
