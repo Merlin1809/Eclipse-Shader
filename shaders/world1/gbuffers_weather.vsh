@@ -31,7 +31,7 @@ void main() {
 
 	lmtexcoord.xy = (gl_MultiTexCoord0).xy;
 
-	vec2 lmcoord = gl_MultiTexCoord1.xy/255.;
+	vec2 lmcoord = gl_MultiTexCoord1.xy / 240.0;
 	lmtexcoord.zw = lmcoord*lmcoord;
 
 	

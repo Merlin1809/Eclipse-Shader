@@ -39,6 +39,10 @@ float encodeVec2(float x,float y){
 	}
 #endif
 
+#ifdef VISUALIZE_LIGHTMAP
+	#include "/lib/text_rendering.glsl"
+#endif
+
 
 void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
@@ -136,8 +140,16 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 	if (normal.z<=-0.9) normal.xy = vec2(-0.0000000000001);
 
 	vec2 lightmap = parameters.lightMap;
+	lightmap = lightmap / (30.0 / 32.0) - (1.0 / 32.0);
 
     vec4 data1 = clamp(vec4(encodeNormal(normal), lightmap), 0.0, 1.0);
+
+	#ifdef VISUALIZE_LIGHTMAP
+		beginText(ivec2(gl_FragCoord.xy/vec2(8.0, 8.0)), ivec2(0.45*viewWidth/8.0, 0.7*viewHeight/8.0));
+		text.fgCol = vec4(1.0, 0.0, 0.0, 1.0);
+		printVec2(lightmap);
+		endText(Albedo.rgb);
+	#endif
 
 	Albedo = clamp(Albedo, 0.0, 1.0);
     

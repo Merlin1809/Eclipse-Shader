@@ -96,6 +96,7 @@ void main() {
 
     gcolor = gl_Color;
 	lightmapCoords = gl_MultiTexCoord1.xy;
+	lightmapCoords = lightmapCoords / (30.0 / 32.0) - (1.0 / 32.0);
 
 	#ifdef CUSTOM_MOON_ROTATION
 		vec3 WmoonVec = customMoonVecSSBO;

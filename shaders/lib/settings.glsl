@@ -1077,6 +1077,8 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 #ifdef SHADER_END_PORTAL
 #endif
 
+// #define VISUALIZE_LIGHTMAP
+
 ///////////////////////////////////////////
 // ----- DISTANT HORIZONS SETTINGS ----- //
 ///////////////////////////////////////////

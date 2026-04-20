@@ -71,6 +71,12 @@ uniform int framemod8;
 
 #include "/lib/res_params.glsl"
 
+#ifdef VISUALIZE_LIGHTMAP
+	uniform float viewWidth;
+	uniform float viewHeight;
+	#include "/lib/text_rendering.glsl"
+#endif
+
 
 uniform float far;
 
@@ -1061,6 +1067,13 @@ void main() {
 		#endif
 
 		vec4 data1 = clamp(vec4(encodeNormal(normal), PackLightmaps), 0.0, 1.0);
+
+		#ifdef VISUALIZE_LIGHTMAP
+			beginText(ivec2(gl_FragCoord.xy/vec2(8.0, 8.0)), ivec2(0.45*viewWidth/8.0, 0.5*viewHeight/8.0));
+			text.fgCol = vec4(1.0, 0.0, 0.0, 1.0);
+			printVec2(data_in.lmtexcoord.zw);
+			endText(Albedo.rgb);
+		#endif
 
 		Albedo = clamp(Albedo, 0.0, 1.0);
 
