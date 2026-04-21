@@ -16,7 +16,7 @@ Notable changes/additions compared to Bliss unstable:
  + Better shader-side (hardcoded) emissives
  + Lightsource with shadows on the main end island
  + Better lightning strikes with clouds lighting up and shadows
- + Photonics, Colorwheel, Caelum (Arda Craft) support
+ + Photonics, Caelum (Arda Craft) support
  + 1.21.11 Chunk Fade In support
  + Emissive Ores and Trims
 
