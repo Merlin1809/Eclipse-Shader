@@ -2456,7 +2456,7 @@ vec3 specularReflections(
 			specularReflections += flashLightReflection;
 		#endif
 
-		#if defined Hand_Held_lights && defined IS_LPV_ENABLED
+		#if defined Hand_Held_lights && defined IS_LPV_ENABLED && HANDHELD_LIGHT_REFLECTIONS > 0
 			if(!isHand && firstPersonCamera
 				#ifdef DEFERRED_SPECULAR
 				&& !isShaderGrass
@@ -2470,8 +2470,8 @@ vec3 specularReflections(
 				vec3 handLightCol = GetHandLight(heldItemId, shiftedPlayerPos, lightRange);
 
 				if(lightRange > 0.0) {
-				vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-				specularReflections += handheldReflection1;
+				vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+				specularReflections += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
 				}
 			}
 
@@ -2483,8 +2483,8 @@ vec3 specularReflections(
 				vec3 handLightCol = GetHandLight(heldItemId2, shiftedPlayerPos, lightRange);
 
 				if(lightRange > 0.0) {
-				vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-				specularReflections += handheldReflection1;
+				vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+				specularReflections += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
 				}
 			}
 
@@ -2497,8 +2497,8 @@ vec3 specularReflections(
 				vec3 handLightCol = GetHandLight(IEXT_beltborne_lanterns_Id, shiftedPlayerPos, lightRange);
 
 				if(lightRange > 0.0) {
-					vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-					specularReflections += handheldReflection1;
+					vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+					specularReflections += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
 				}
 				}
 			#endif

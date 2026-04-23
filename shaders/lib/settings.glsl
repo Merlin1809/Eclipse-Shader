@@ -1159,6 +1159,10 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 #ifdef LPV_HANDHELD_SHADOWS
 #endif
 
+#define HANDHELD_LIGHT_REFLECTIONS 100 // [0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100 105 110 115 120 125 150 175 200]
+
+#ifdef HANDHELD_LIGHT_REFLECTIONS
+#endif
 
 //////////////////////////////////
 // ----- VOXY SETTINGS ----- //

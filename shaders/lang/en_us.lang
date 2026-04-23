@@ -1,6 +1,6 @@
 option.SHADER_VERSION_LABEL = §d§lECLIPSE§r - A Bliss Edit
     prefix.SHADER_VERSION_LABEL = V
-    value.SHADER_VERSION_LABEL.482 = 8.2.1
+    value.SHADER_VERSION_LABEL.482 = 8.2.2
 
 iris_extension.keybind.key0.name=Flashlight
 
@@ -258,6 +258,8 @@ screen.Direct_Light = Direct Light
         option.LPV_HANDHELD_SHADOWS_QUALITY = Handheld Shadows Quality
             value.LPV_HANDHELD_SHADOWS_QUALITY.0 = Low
             value.LPV_HANDHELD_SHADOWS_QUALITY.1 = High
+        option.HANDHELD_LIGHT_REFLECTIONS = Handheld Lights in Reflections
+            suffix.HANDHELD_LIGHT_REFLECTIONS=%
 
 
 screen.Ambient_light = Ambient Light

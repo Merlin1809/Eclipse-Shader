@@ -634,12 +634,15 @@ void main() {
 	#endif
 
 	#if (defined BLOCKENTITIES || defined ENTITIES || defined HAND) && !defined TRANSLUCENT_ENTITIES && defined TRANSLUCENT_ENTITIES_DITHER_FALLBACK
-		float entityAlbedo = clamp((Albedo.a*Color.a - 0.1) * 10.0 / 9.0, 0.0, 1.0);
-		#ifdef TAA
-			if(entityAlbedo < BN) discard;
-		#else
-			if(entityAlbedo < R2) discard;
-		#endif
+		if(data_in.blockID != 1612) {
+			float entityAlbedo = clamp((Albedo.a*Color.a - 0.1) * 10.0 / 9.0, 0.0, 1.0);
+
+			#ifdef TAA
+				if(entityAlbedo < BN) discard;
+			#else
+				if(entityAlbedo < R2) discard;
+			#endif
+		}
 	#endif
 
 	float torchlightmap = lmcoord.x;
@@ -676,7 +679,7 @@ void main() {
 
 		float endPortalEmission = 0.0;
 		if(PORTAL) {
-		#if MC_VERSION < 260100 && defined SHADER_END_PORTAL
+			#if MC_VERSION < 260100 && defined SHADER_END_PORTAL
 				const float steps = 20.0;
 
 				vec3 color = vec3(0.0);

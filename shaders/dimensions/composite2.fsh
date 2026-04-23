@@ -548,7 +548,7 @@ void main() {
         FINAL_COLOR += flashLightReflection;
       #endif
 
-      #if defined Hand_Held_lights && defined IS_LPV_ENABLED
+      #if defined Hand_Held_lights && defined IS_LPV_ENABLED && HANDHELD_LIGHT_REFLECTIONS > 0
         if(!hand && firstPersonCamera && !isShaderGrass) {
           if (heldItemId > 0){
             vec3 shiftedViewPos = viewPos + vec3(-0.25, 0.2, 0.0);
@@ -558,8 +558,8 @@ void main() {
             vec3 handLightCol = GetHandLight(heldItemId, shiftedPlayerPos, lightRange);
 
             if(lightRange > 0.0) {
-              vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-              FINAL_COLOR += handheldReflection1;
+              vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+              FINAL_COLOR += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
             }
           }
 
@@ -571,8 +571,8 @@ void main() {
             vec3 handLightCol = GetHandLight(heldItemId2, shiftedPlayerPos, lightRange);
 
             if(lightRange > 0.0) {
-              vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-              FINAL_COLOR += handheldReflection1;
+              vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+              FINAL_COLOR += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
             }
           }
 
@@ -585,8 +585,8 @@ void main() {
               vec3 handLightCol = GetHandLight(IEXT_beltborne_lanterns_Id, shiftedPlayerPos, lightRange);
 
               if(lightRange > 0.0) {
-                vec3 handheldReflection1 = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
-                FINAL_COLOR += handheldReflection1;
+                vec3 handheldReflection = handLightCol * GGX(normal, -shiftedPlayerPos, -shiftedPlayerPos, roughness, reflectance, metalAlbedoTint);
+                FINAL_COLOR += handheldReflection*HANDHELD_LIGHT_REFLECTIONS*0.005;
               }
             }
           #endif
