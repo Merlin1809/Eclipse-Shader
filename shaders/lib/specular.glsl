@@ -2104,8 +2104,10 @@ vec4 photonicsReflection(
 			if(hitTranslucent && isEyeInWater != 1) endPos = translucentHitRays[0].hitPos + world_offset - cameraPosition;
 			#endif
 
+			vec4 LPVfog = vec4(0.0);
+			
 			#ifdef VOXEL_REFLECTIONS_LPV_FOG
-				vec4 LPVfog = raymarchWSR_LPV(origin, endPos, noise.x);
+				LPVfog = raymarchWSR_LPV(origin, endPos, noise.x);				
 			#endif
 
 			vec4 fog;
