@@ -12,7 +12,6 @@ Notable changes/additions compared to Bliss unstable:
  + Distant Horizons chunk fading
  + Moon Texture with phases
  + Snow Overlay and Rain Ripples
- + Better mod support
  + Better shader-side (hardcoded) emissives
  + Lightsource with shadows on the main end island
  + Better lightning strikes with clouds lighting up and shadows
@@ -71,6 +70,15 @@ Note: With default settings there is at least one guaranteed eclipse per ingame 
  - locate the `green "code" button` on this page. this button is NOT in the `releases` page.
  - click the `green "code" button` and select `"download zip"`.
  - once the zip file finishes downloading, install it like a normal shader. you do NOT need to unzip/extract/decompress.
+
+# Incompatible Mods / Mods with issues
+- Puddles and Floods
+- Create Aeronautics
+- BBS
+- Iris Uniforms
+- Epic Fight Mod (disable the compute shader setting in the Epic Fight Mod settings)
+- Particle Rain
+- Physics Mod (Smoke, Fluid Sim and Weather)
 
 # You want MOAR performance?
 > [!NOTE]  
