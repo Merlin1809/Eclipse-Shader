@@ -74,7 +74,7 @@ Note: With default settings there is at least one guaranteed eclipse per ingame 
 # Incompatible Mods / Mods with issues
 - Puddles and Floods
 - Create Aeronautics
-- BBS
+- BBS (disable shader curves setting in BBS settings)
 - Iris Uniforms
 - Epic Fight Mod (disable the compute shader setting in the Epic Fight Mod settings)
 - Particle Rain
