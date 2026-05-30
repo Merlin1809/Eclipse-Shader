@@ -5,7 +5,6 @@
 #ifdef OVERWORLD_SHADER
   in DATA {
     flat vec3 WsunVec;
-    flat vec3 WmoonVec;
   };
 #endif
 

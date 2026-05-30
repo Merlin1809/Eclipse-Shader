@@ -10,7 +10,6 @@
 #ifdef OVERWORLD_SHADER
 	out DATA {
 	flat vec3 WsunVec;
-	flat vec3 WmoonVec;
 	};
 #endif
 
@@ -41,17 +40,15 @@ void main() {
 			WsunVec = normalize(mat3(gbufferModelViewInverse) * sunPosition);
 		#endif
 
-		#if AURORA_LOCATION > 0
-			#ifdef CUSTOM_MOON_ROTATION
-				WmoonVec = customMoonVecSSBO;
+		#ifdef CUSTOM_MOON_ROTATION
+			vec3 WmoonVec = customMoonVecSSBO;
+		#else
+			#ifdef SMOOTH_MOON_ROTATION
+				vec3 WmoonVec = WmoonVecSmooth;
 			#else
-				#ifdef SMOOTH_MOON_ROTATION
-					WmoonVec = WmoonVecSmooth;
-				#else
-					WmoonVec = normalize(mat3(gbufferModelViewInverse) * moonPosition);
-				#endif
-				if(dot(-WmoonVec, WsunVec) < 0.9999) WmoonVec = -WmoonVec;
+				vec3 WmoonVec = normalize(mat3(gbufferModelViewInverse) * moonPosition);
 			#endif
+			if(dot(-WmoonVec, WsunVec) < 0.9999) WmoonVec = -WmoonVec;
 		#endif
 
 		WsunVec = mix(WmoonVec, WsunVec, clamp(float(sunElevation > 1e-5)*2.0 - 1.0,0,1));

@@ -690,7 +690,7 @@ void main() {
 		vec4 specularData = vec4(0.0);
 	#endif
 
-	vec4 otherData = clamp(vec4(normal*0.5+0.5, 1.0),0.0,1.0);
+	vec4 otherData = clamp(vec4(normal*0.5+0.5, 0.0),0.0,1.0);
 	
 	OutSpecular = vec4(
 		encodeVec2(specularData.x, otherData.x),
