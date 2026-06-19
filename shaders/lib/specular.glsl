@@ -200,7 +200,7 @@ vec3 rayTraceSpeculars(vec3 dir, vec3 position, float dither, float quality, con
 		#endif
 		
 		#if (defined VOXY && defined VOXY_REFLECTIONS) || (defined DISTANT_HORIZONS && defined DH_SCREENSPACE_REFLECTIONS)
-		if (sp >= 1.0){
+		if (sp > 0.9999999){
 
 			#ifdef FULLRESDEPTH
 				sp = texelFetch(dhVoxyDepthTex, ivec2(spos2.xy/texelSize),0).r;
@@ -2405,7 +2405,7 @@ vec3 specularReflections(
 				 ,isWater
 				#endif
 				 );
-				#ifdef VOXEL_REFLECTIONS
+				#if defined VOXEL_REFLECTIONS && (defined DEFERRED_BACKGROUND_REFLECTION || defined FORWARD_BACKGROUND_REFLECTION)
 					backgroundReflection *= backgroundTint;
 				#endif
 				// darkening for metals.
