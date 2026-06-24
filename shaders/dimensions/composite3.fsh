@@ -156,9 +156,13 @@ uniform sampler2D colortex4;
 		uniform int heldItemId2;
 
 		#include "/lib/diffuse_lighting.glsl"
+	#else
+		uniform bool IEXT_KEY_0;
 	#endif
 	#ifdef LPV_VL_FOG_ILLUMINATION_HANDHELD
 	#endif
+#else
+	uniform bool IEXT_KEY_0;
 #endif
 
 bool eyeInWater = isEyeInWater == 1;
