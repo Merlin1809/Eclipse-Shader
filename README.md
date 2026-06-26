@@ -72,6 +72,7 @@ Note: With default settings there is at least one guaranteed eclipse per ingame 
  - once the zip file finishes downloading, install it like a normal shader. you do NOT need to unzip/extract/decompress.
 
 # Incompatible Mods / Mods with issues
+- Iris (on MC 26.2)
 - Puddles and Floods
 - Create Aeronautics
 - BBS (disable shader curves setting in BBS settings)
