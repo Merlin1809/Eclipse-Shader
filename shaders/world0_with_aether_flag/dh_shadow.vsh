@@ -1,4 +1,5 @@
 #version 430 compatibility
+#include "/lib/SSBOs.glsl"
 
 /*
 !! DO NOT REMOVE !!
@@ -19,7 +20,7 @@ uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
 
 out flat int water;
-
+out vec4 gcolor;
 
 
 
@@ -53,11 +54,19 @@ void main() {
 	texcoord.xy = gl_MultiTexCoord0.xy;
 
 	vec3 position = mat3(gl_ModelViewMatrix) * vec3(gl_Vertex) + gl_ModelViewMatrix[3].xyz;
+
+	vec3 worldpos = mat3(shadowModelViewInverse) * position + shadowModelViewInverse[3].xyz;
+
 	#ifdef DH_OVERDRAW_PREVENTION
-  		vec3 worldpos = mat3(shadowModelViewInverse) * position + shadowModelViewInverse[3].xyz;
 		overdrawCull = 1.0 - clamp(1.0 - length(worldpos) / far,0.0,1.0);
 	#else
 		overdrawCull = 1.0;
+	#endif
+
+	#ifdef CUSTOM_MOON_ROTATION
+		position = mat3(customShadowMatrixSSBO) * worldpos + customShadowMatrixSSBO[3].xyz;
+	#else
+		position = mat3(shadowModelView) * worldpos + shadowModelView[3].xyz;
 	#endif
 
 	#ifdef DISTORT_SHADOWMAP
@@ -67,4 +76,6 @@ void main() {
 	#endif
 
   	gl_Position.z /= 6.0;
+
+	gcolor = gl_Color;
 }

@@ -598,7 +598,7 @@ float SSRT_FlashLight_Shadows(vec3 viewPos, bool depthCheck, vec3 lightDir, floa
 			} else
 		#endif
 			{
-				samplePos = texelFetch(depthtex2, ivec2(newPos.xy/texelSize),0).x,hand;
+				samplePos = texelFetch(depthtex2, ivec2(newPos.xy/texelSize),0).x;
 			}
 
 		if(samplePos < newPos.z && samplePos > 0.0){// && (samplePos <= max(minZ,maxZ) && samplePos >= min(minZ,maxZ))){

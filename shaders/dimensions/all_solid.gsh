@@ -262,26 +262,28 @@ void main() {
                 if(vertexDist > 10.0) {triangle_count = 1; heightMult = 5.0;}
             #endif
 
+            vec4 sideCheck = data_in[0].grassSideCheck;
+            if(sideCheck.x < -10.0) sideCheck = vec4(0.0);
 
-            float eastHeightMult = clamp(abs(data_in[0].grassSideCheck.x) * abs(vertex.x-(data_in[0].centerPosition.x-0.5)), 0.0, 1.0);
-            float westHeightMult = clamp(abs(data_in[0].grassSideCheck.y) * abs(vertex.x-(data_in[0].centerPosition.x+0.5)), 0.0, 1.0);
-            float southHeightMult = clamp(abs(data_in[0].grassSideCheck.z) * abs(vertex.z-(data_in[0].centerPosition.z-0.5)), 0.0, 1.0);
-            float northHeightMult = clamp(abs(data_in[0].grassSideCheck.w) * abs(vertex.z-(data_in[0].centerPosition.z+0.5)), 0.0, 1.0);
 
-            eastHeightMult *= eastHeightMult*normalize(data_in[0].grassSideCheck.x);
-            westHeightMult *= westHeightMult*normalize(data_in[0].grassSideCheck.y);
-            southHeightMult *= southHeightMult*normalize(data_in[0].grassSideCheck.z);
-            northHeightMult *= northHeightMult*normalize(data_in[0].grassSideCheck.w);
+            float eastHeightMult = clamp(abs(sideCheck.x) * abs(vertex.x-(data_in[0].centerPosition.x-0.5)), 0.0, 1.0);
+            float westHeightMult = clamp(abs(sideCheck.y) * abs(vertex.x-(data_in[0].centerPosition.x+0.5)), 0.0, 1.0);
+            float southHeightMult = clamp(abs(sideCheck.z) * abs(vertex.z-(data_in[0].centerPosition.z-0.5)), 0.0, 1.0);
+            float northHeightMult = clamp(abs(sideCheck.w) * abs(vertex.z-(data_in[0].centerPosition.z+0.5)), 0.0, 1.0);
 
-            float totalHeightMult = 0.5*clamp(eastHeightMult + westHeightMult + southHeightMult + northHeightMult, -1.0*BASE_GRASS_HEIGHT*BASE_GRASS_HEIGHT, 1.0*SHORT_GRASS_HEIGHT) + 1.0*BASE_GRASS_HEIGHT;
-            heightMult *= totalHeightMult;
+            eastHeightMult *= eastHeightMult*sign(sideCheck.x);
+            westHeightMult *= westHeightMult*sign(sideCheck.y);
+            southHeightMult *= southHeightMult*sign(sideCheck.z);
+            northHeightMult *= northHeightMult*sign(sideCheck.w);
 
-            if(abs(data_in[0].grassSideCheck.x) > 1.5) { 
-                eastHeightMult = 0.0;
-                westHeightMult = 0.0;
-                southHeightMult = 0.0;
-                northHeightMult = 0.0;
-            }
+            float mult = 1.0;
+
+            float totalHeightMult = mult * 0.5 * clamp(eastHeightMult + westHeightMult + southHeightMult + northHeightMult, -BASE_GRASS_HEIGHT*BASE_GRASS_HEIGHT, SHORT_GRASS_HEIGHT) + BASE_GRASS_HEIGHT;
+
+            if(abs(sideCheck.x) > 1.5) eastHeightMult = 0.0;
+            if(abs(sideCheck.y) > 1.5) westHeightMult = 0.0;
+            if(abs(sideCheck.z) > 1.5) southHeightMult = 0.0;
+            if(abs(sideCheck.w) > 1.5) northHeightMult = 0.0;
 
             vec2 edgeBlend = eastHeightMult*vec2(-0.17,0.0) + westHeightMult*vec2(0.17,0.0) + southHeightMult*vec2(0.0,-0.17) + northHeightMult*vec2(0.0,0.17);
 

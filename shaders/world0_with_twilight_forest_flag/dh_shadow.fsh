@@ -7,6 +7,7 @@ in flat int water;
 in vec2 texcoord;
 
 in float overdrawCull;
+in vec4 gcolor;
 
 uniform sampler2D gtexture;
 //////////////////////////////VOID MAIN//////////////////////////////
@@ -27,5 +28,5 @@ void main() {
         return;
     }
     
-	gl_FragData[0] = texture(gtexture, texcoord.xy);
+	gl_FragData[0] = texture(gtexture, texcoord.xy)*gcolor;
 }

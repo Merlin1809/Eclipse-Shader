@@ -34,7 +34,7 @@ uniform int renderStage;
 void main() {
 	if (LIGHTNING > 0.0) discard;
 
-	#if defined DISTANT_HORIZONS && DH_CHUNK_FADING > 1
+	#if defined DISTANT_HORIZONS && DH_CHUNK_FADING > 1 && !defined DISTANT_HORIZONS_SHADOWMAP
 		float viewDist = length(playerpos);
 		float minDist = min(shadowDistance, far);
 

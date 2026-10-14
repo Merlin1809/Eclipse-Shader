@@ -1353,6 +1353,7 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 
 
 // undefine every feature that won't work on mac
+// useless
 #ifdef MC_OS_MAC
 #undef CUMULONIMBUS_LIGHTNING
 #undef REALMOON
@@ -1387,4 +1388,9 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 
 #ifdef VOXY
 #undef DISTANT_HORIZONS
+#endif
+
+#ifdef MC_OS_MAC_VK
+	#undef SHADER_GRASS
+	#undef BEACON_FLOODFILL
 #endif

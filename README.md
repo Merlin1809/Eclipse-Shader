@@ -72,6 +72,9 @@ Note: With default settings there is at least one guaranteed eclipse per ingame 
  - once the zip file finishes downloading, install it like a normal shader. you do NOT need to unzip/extract/decompress.
 
 # Incompatible Mods / Mods with issues
+- OptiFine
+- Iris/Oculus requires at least version 1.6.11 of the mod
+- MacOS (not working on OpenGL, working on Vulkan with "[Iris Extension](https://modrinth.com/mod/iris-extension)" but Shader Grass won't work)
 - Chunks Fade In mod
 - Puddles and Floods
 - Create Aeronautics (requires "[Iris Extension](https://modrinth.com/mod/iris-extension)" for fix)
