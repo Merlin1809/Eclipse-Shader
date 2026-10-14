@@ -316,6 +316,7 @@ void main() {
 
             vec3 right = GRASS_BASE_THICKNESS*normalize(cross(worldUp, dir));
 
+            heightMult *= totalHeightMult;
             worldUp *= heightMult;
 
             originalVertex -= right*0.125*GRASS_BASE_THICKNESS;
