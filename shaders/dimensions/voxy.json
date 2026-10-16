@@ -99,6 +99,9 @@
     
     }"},
     "useViewportDims": true,
+    #if VOXY >= 3
+    "useDynamicFarPlane": true,
+    #endif
     "uniforms": [
         "viewWidth",
         "viewHeight",

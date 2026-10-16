@@ -317,6 +317,10 @@ vec3 closestToCamera5taps_DH(vec2 texcoord, sampler2D depth, sampler2D dhDepth, 
 	vec3 dbl = vec3(texcoord,0.);
 	vec3 dbr = vec3(texcoord,0.);
 
+	#ifdef VOXY
+	if(depthCheck) texcoord /= RENDER_SCALE;
+	#endif
+
 	dtl += vec3(-texelSize, 					depthCheck ? texture(dhDepth, texcoord - dv - du).x	:	texture(depth, texcoord - dv - du).x);
 	dtr += vec3( texelSize.x, -texelSize.y, 	depthCheck ? texture(dhDepth, texcoord - dv + du).x	:	texture(depth, texcoord - dv + du).x);
 	dmc += vec3( 0.0, 0.0, 				   		depthCheck ? texture(dhDepth, texcoord).x				:	texture(depth, texcoord).x);

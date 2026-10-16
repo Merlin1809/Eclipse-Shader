@@ -182,7 +182,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	{
     vec3 viewPos = DH_toScreenSpace(gl_FragCoord.xyz*vec3(texelSize/RENDER_SCALE,1.0));
 
-	vec3 feetPlayerPos = mat3(vxModelViewInv) * viewPos + vxModelViewInv[3].xyz;;
+	vec3 feetPlayerPos = mat3(vxModelViewInv) * viewPos + vxModelViewInv[3].xyz;
     
     gbuffer_data_0 = parameters.sampledColour * parameters.tinting;
 
@@ -191,6 +191,9 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
     
     int blockID = int(parameters.customId);
     bool isWater = blockID == 8;
+
+	vec2 lightmap = parameters.lightMap;
+	lightmap = lightmap / (30.0 / 32.0) - (1.0 / 32.0);
 
     #ifndef WhiteWorld
 		#ifdef VANILLA_LIKE_WATER
@@ -258,7 +261,7 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
     	AmbientLightColor *= skylight;
 
 		vec3 MinimumLightColor = vec3(1.0);
-		Indirect_lighting = doIndirectLighting(AmbientLightColor, MinimumLightColor, parameters.lightMap.y);
+		Indirect_lighting = doIndirectLighting(AmbientLightColor, MinimumLightColor, lightmap.y);
     #endif
 
 	#ifdef NETHER_SHADER
@@ -292,11 +295,11 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 	#endif
 
 
-	float indoors = min(max(parameters.lightMap.y-0.5,0.0)/0.4,1.0);
+	float indoors = min(max(lightmap.y-0.5,0.0)/0.4,1.0);
 
 	vec3 lightColor = vec3(TORCH_R,TORCH_G,TORCH_B);
 	const vec3 lpvPos = vec3(0.0);
-	Indirect_lighting += doBlockLightLighting(lightColor, parameters.lightMap.x * 0.8, feetPlayerPos, lpvPos, false, false);
+	Indirect_lighting += doBlockLightLighting(lightColor, lightmap.x * 0.8, feetPlayerPos, lpvPos, false, false);
 
 	vec3 FinalColor = (Indirect_lighting + Direct_lighting*indoors) * Albedo;
 	
@@ -384,7 +387,7 @@ if (gl_FragCoord.x * texelSize.x < 1.0  && gl_FragCoord.y * texelSize.y < 1.0 )	
 
 	gbuffer_data_2 = vec4(0.0, encodeVec2(GLASS_TINT_COLORS.rg), encodeVec2(GLASS_TINT_COLORS.ba), 0.5);
 
-    gbuffer_data_3 = vec4(1, 1, encodeVec2(parameters.lightMap), 1);
+    gbuffer_data_3 = vec4(1, 1, encodeVec2(lightmap), 1);
 
 }
 }
